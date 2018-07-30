@@ -9,7 +9,7 @@ swap interval can be set directly by the application.
 The following patterns are provided.
 
 * None: will render nothing, might be useful to check for FPS measurements
-* Color Cycler: cycle through the eight edges of the RGB cube (epilepsy warning)
+* Color Cycler: cycle through the eight edges of the RGB cube (**Photosensitive epilepsy WARNING**)
 * Color Pulse: pulse between black and white
 * Bars: horizontally moving vertical bars (the default)
 
