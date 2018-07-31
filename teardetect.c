@@ -92,7 +92,7 @@ typedef struct {
 #define TDCTX_DROP_WINDOW	0x2
 #define TDCTX_SWAP_INTERVAL_SET	0x4
 #define TDCTX_BINDING_EXTENSIONS_LOADED 0x8
-#define TDCTX_FLAGS_DEFAULT	TDCTX_RUN
+#define TDCTX_FLAGS_DEFAULT	(TDCTX_RUN | TDCTX_SWAP_INTERVAL_SET)
 
 /****************************************************************************
  * CONSOLE OUTPUT                                                           *
@@ -593,6 +593,7 @@ td_ctx_keyhandler(GLFWwindow *win, int key, int scancode, int action, int mods)
 				break;
 			case 'F':
 				td_ctx_switch_fullscreen(ctx, (mods & GLFW_MOD_SHIFT)?TDWIN_FULLSCREEN_MODE_SWITCH:0);
+				td_ctx_set_swap_interval(ctx);
 				break;
 			case 'S':
 				if (!(mods & GLFW_MOD_SHIFT)) {
@@ -669,7 +670,8 @@ td_ctx_reset(TDContext *ctx)
 	ctx->avg_lat=-1.0;
 	ctx->avg_fps=-1.0;
 	ctx->cur_lat=-1.0;
-	ctx->flags &= ~(TDCTX_DROP_WINDOW | TDCTX_BINDING_EXTENSIONS_LOADED | TDCTX_SWAP_INTERVAL_SET);
+	ctx->flags &= ~(TDCTX_DROP_WINDOW | TDCTX_BINDING_EXTENSIONS_LOADED);
+	// ctx->flags &= ~(TDCTX_SWAP_INTERVAL_SET);
 }
 
 static void
@@ -677,6 +679,7 @@ td_ctx_init(TDContext *ctx)
 {
 	int i;
 
+	td_ctx_reset(ctx);
 	td_win_init(&ctx->win);
 	td_disp_pulse_init(&ctx->pulse);
 	td_disp_bars_init(&ctx->bars);
@@ -684,8 +687,6 @@ td_ctx_init(TDContext *ctx)
 	ctx->swapControlMode=(TDSwapControlMode)0;
 	ctx->swapInterval=1;
 	ctx->flags=TDCTX_FLAGS_DEFAULT;
-	td_ctx_reset(ctx);
-	ctx->cur_lat=-1.0;
 	for (i=0; i<TIMER_QUERY_COUNT; i++) {
 		ctx->timer_query_obj[i]=0;
 		ctx->timestamp[i]=0;
